@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: fluentd-cloudwatch
+  labels:
+    k8s-app: fluentd-cloudwatch
+spec:
+  selector:
+    matchLabels:
+      name: fluentd-cloudwatch
+  template:
+    metadata:
+      labels:
+        name: fluentd-cloudwatch
+    spec:
+      serviceAccountName: fluentd-sa
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          operator: Exists
+          effect: NoSchedule
+      containers:
+        - name: fluentd
+          image: fluent/fluentd-kubernetes-daemonset:v1.17.0-debian-cloudwatch-amd64-1.4
+          securityContext:
+            privileged: true
+          env:
+            - name: FLUENT_ELASTICSEARCH_SED_DISABLE
+              value: "true"
+            - name: AWS_REGION
+              value: "{{ .Values.aws_region }}"
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: aws-credentials
+                  key: access_key_id
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aws-credentials
+                  key: secret_access_key
+          volumeMounts:
+            - name: varlog
+              mountPath: /var/log
+            - name: config-volume
+              mountPath: /fluentd/etc/fluent.conf
+              subPath: fluent.conf
+            - name: logextramount
+              mountPath: /var/lib/docker/containers/
+              readOnly: true
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: varlog
+          hostPath:
+            path: /var/log
+        - name: config-volume
+          configMap:
+            name: fluentd-config
+        - name: logextramount
+          hostPath:
+            path: /var/lib/docker/containers/

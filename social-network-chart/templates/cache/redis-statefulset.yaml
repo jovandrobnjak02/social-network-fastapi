@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: cache-redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+        - name: redis
+          image: bitnami/redis:7.4.0-debian-12-r0
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: ALLOW_EMPTY_PASSWORD
+              value: "yes" # Ensures no password is required for Redis
+            - name: REDIS_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: cache-redis-configmap
+                  key: REDIS_PORT
+          ports:
+            - containerPort: 6379
+          volumeMounts:
+            - name: data
+              mountPath: /bitnami/redis
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi

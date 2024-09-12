@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: {{ .Release.Name }}-configmap
+    labels:
+        app: {{ .Values.label }}
+data:
+    POSTGRES_HOST: "{{ .Values.configmap.host }}"
+    POSTGRES_PORT: "{{ .Values.configmap.port }}"
+    ALGORITHM: "{{ .Values.configmap.algorithm }}"
+    ACCESS_TOKEN_EXPIRE_MINUTES: "{{ .Values.configmap.token_exp }}"
+    REDIS_PORT: "{{ .Values.configmap.redis_port }}"
+    REDIS_HOST: "{{ .Values.configmap.redis_host }}"
+    API_VERSION: "{{ .Values.configmap.api_version }}"

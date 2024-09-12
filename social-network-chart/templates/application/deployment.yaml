@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app: {{ .Values.label }}
+spec:
+  replicas: {{ .Values.app.replica_count }}
+  selector:
+    matchLabels:
+      app: {{ .Values.label }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.label }}
+    spec:
+      imagePullSecrets:
+        - name: dockerconfigjson
+      containers:
+        - name: {{ .Release.Name }}
+          image: "{{ .Values.app.image }}:{{ .Values.app.tag }}"
+          ports:
+            - containerPort: {{ .Values.app.port }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Release.Name }}-configmap
+            - secretRef:
+                name: {{ .Release.Name }}-secret
+

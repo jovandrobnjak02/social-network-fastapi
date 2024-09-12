@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cache-redis-configmap
+  labels:
+    app: redis
+data:
+  REDIS_PORT: "6379" # Redis Port stored in ConfigMap

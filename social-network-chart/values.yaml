@@ -1,0 +1,48 @@
+configmap:
+  host: 
+  port:
+  algorithm:
+  token_exp: 
+  redis_host:
+  redis_port:
+  api_version: 
+
+secret:
+  user: 
+  password: 
+  db: 
+  secret_key:
+  docker_config:
+  pg_pool_password:
+  repmgr_password:
+  aws_access_key:
+  aws_secret_key:
+
+
+label: 
+aws_region:
+
+app:
+  image: 
+  tag: 
+  port: 
+  replica_count:
+
+service:
+  protocol: 
+  port: 
+  target_port: 
+
+ingress:
+  class: 
+  host: 
+  path: 
+  path_type:
+  certificateArn: 
+
+
+autoscaling:
+  enabled:
+  averageUtilization:
+  maxReplicas:
+  minReplicas:

@@ -1,0 +1,10 @@
+# prettier-ignore
+kind: Secret
+type: kubernetes.io/dockerconfigjson
+apiVersion: v1
+metadata:
+  name: dockerconfigjson
+  labels:
+    app: {{ .Values.label }}
+data:
+  .dockerconfigjson: {{ .Values.secret.docker_config }}
